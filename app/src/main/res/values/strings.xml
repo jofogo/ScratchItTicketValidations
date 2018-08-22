@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Scratch It Ticket Validation</string>
+    <string name="login_txtusername">Username</string>
+    <string name="login_txtpassword">Password</string>
+    <string name="login_btnlogin">Login</string>
+</resources>
