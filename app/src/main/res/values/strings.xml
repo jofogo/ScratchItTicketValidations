@@ -1,6 +1,28 @@
 <resources>
     <string name="app_name">Scratch It Ticket Validation</string>
+    <string name="dev_name">Combiz Essential Solutions Corporation\n© 2018</string>
+
     <string name="login_txtusername">Username</string>
     <string name="login_txtpassword">Password</string>
     <string name="login_btnlogin">Login</string>
+
+    <string name="settings_lblserver">Server</string>
+    <string name="settings_txtserver">Server URL (ex. https://licserv.\ncombizcorp.com/scratchit)</string>
+    <string name="settings_lbllicense">License</string>
+    <string name="settings_txtlicense">Not registered</string>
+    <string name="settings_btnsave">Save settings</string>
+
+    <string name="ticketlist_lblheader">Ticket ID</string>
+    <string name="ticketlist_lblcounter">No.</string>
+    <string name="ticketlist_btnremove">Remove Selected Tickets</string>
+
+
+    <string name="upload_lblcounter">No.</string>
+    <string name="upload_lblheader">Ticket ID</string>
+    <string name="upload_lblstatus">Status</string>
+    <string name="upload_btnupload">Upload Tickets</string>
+
+    <string name="menu_settings">Settings</string>
+    <string name="menu_logout">Logout</string>
+    <string name="menu_about">About</string>
 </resources>
