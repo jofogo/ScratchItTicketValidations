@@ -9,7 +9,7 @@
     <TableLayout
         android:id="@+id/tblTickets"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -26,182 +26,204 @@
             android:id="@+id/trHeader"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginRight="5dp"
-            android:divider="?attr/actionBarDivider">
+            android:layout_weight="1">
 
-            <CheckBox
-                android:id="@+id/cbSelect"
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/lblCounter"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_column="0" />
+                android:layout_column="0"
+                android:layout_gravity="center"
+                android:layout_weight=".1"
+                android:text="@string/ticketlist_lblcounter"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/textView4"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
-                android:layout_gravity="center_vertical|fill_horizontal"
-                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:layout_weight=".8"
                 android:text="@string/ticketlist_lblheader"
                 android:textAlignment="center"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/textView5"
-                android:layout_width="wrap_content"
+            <CheckBox
+                android:id="@+id/cbSelect"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_column="2"
-                android:layout_gravity="center|end"
-                android:text="@string/ticketlist_lblcounter"
-                android:textStyle="bold" />
+                android:layout_gravity="center"
+                android:layout_weight=".1" />
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="0" />
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_gravity="center"
+                android:layout_weight=".1"
+                android:text="001" />
+
+            <TextView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
-                android:layout_gravity="center_vertical|fill_horizontal"
-                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:layout_weight=".8"
                 android:text="1234567890123456789011"
                 android:textAlignment="center" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <CheckBox
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_column="2"
-                android:layout_gravity="right|center_vertical"
-                android:layout_span="1"
-                android:text="001" />
+                android:layout_gravity="center"
+                android:layout_weight=".1" />
+
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="0" />
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_gravity="center"
+                android:layout_weight=".1"
+                android:text="002" />
+
+            <TextView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
-                android:layout_gravity="center_vertical|fill_horizontal"
-                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:layout_weight=".8"
                 android:text="1234567890123456789022"
                 android:textAlignment="center" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <CheckBox
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_column="2"
-                android:layout_gravity="right|center_vertical"
-                android:layout_span="1"
-                android:text="002" />
+                android:layout_gravity="center"
+                android:layout_weight=".1" />
 
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="0" />
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_gravity="center"
+                android:layout_weight=".1"
+                android:text="003" />
+
+            <TextView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
-                android:layout_gravity="center_vertical|fill_horizontal"
-                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:layout_weight=".8"
                 android:text="1234567890123456789033"
                 android:textAlignment="center" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <CheckBox
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_column="2"
-                android:layout_gravity="right|center_vertical"
-                android:layout_span="1"
-                android:text="003" />
+                android:layout_gravity="center"
+                android:layout_weight=".1" />
+
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="0" />
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_gravity="center"
+                android:layout_weight=".1"
+                android:text="004" />
+
+            <TextView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
-                android:layout_gravity="center_vertical|fill_horizontal"
-                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:layout_weight=".8"
                 android:text="1234567890123456789044"
                 android:textAlignment="center" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <CheckBox
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_column="2"
-                android:layout_gravity="right|center_vertical"
-                android:layout_span="1"
-                android:text="004" />
+                android:layout_gravity="center"
+                android:layout_weight=".1" />
+
         </TableRow>
 
         <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="0" />
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_gravity="center"
+                android:layout_weight=".1"
+                android:text="005" />
+
+            <TextView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
-                android:layout_gravity="center_vertical|fill_horizontal"
-                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:layout_weight=".8"
                 android:text="1234567890123456789055"
                 android:textAlignment="center" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <CheckBox
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_column="2"
-                android:layout_gravity="right|center_vertical"
-                android:layout_span="1"
-                android:text="005" />
+                android:layout_gravity="center"
+                android:layout_weight=".1" />
 
         </TableRow>
 
         <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
 
             <Button
                 android:id="@+id/button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_span="3"
                 android:layout_weight="1"
                 android:text="@string/ticketlist_btnremove" />
