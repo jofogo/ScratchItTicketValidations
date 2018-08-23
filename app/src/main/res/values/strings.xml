@@ -12,12 +12,12 @@
     <string name="settings_txtlicense">Not registered</string>
     <string name="settings_btnsave">Save settings</string>
 
-    <string name="ticketlist_lblheader">Ticket ID</string>
+    <string name="ticketlist_lblheader">Ticket</string>
     <string name="ticketlist_lblcounter">No.</string>
     <string name="ticketlist_btnremove">Remove Selected Tickets</string>
 
     <string name="upload_lblcounter">No.</string>
-    <string name="upload_lblheader">Ticket ID</string>
+    <string name="upload_lblheader">Ticket</string>
     <string name="upload_lblstatus">Result</string>
     <string name="upload_btnupload">Ok</string>
 
