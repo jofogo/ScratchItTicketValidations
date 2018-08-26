@@ -6,27 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".ValidationActivity">
 
-    <com.journeyapps.barcodescanner.DecoratedBarcodeView
-        android:id="@+id/tViewScanner"
-        android:layout_width="0dp"
-        android:layout_height="240dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.06999999">
-
-    </com.journeyapps.barcodescanner.DecoratedBarcodeView>
-
     <TableLayout
+        android:id="@+id/tableLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -57,7 +44,9 @@
                 android:layout_marginRight="20dp"
                 android:layout_span="1"
                 android:layout_weight=".3"
-                android:text="001"
+                android:enabled="false"
+                android:onClick="displayTicketList"
+                android:text="@string/validation_btnticketcount"
                 android:textSize="18sp" />
         </TableRow>
 
@@ -67,7 +56,7 @@
             android:layout_weight="1">
 
             <EditText
-                android:id="@+id/editText"
+                android:id="@+id/txtTicketCode"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_column="0"
@@ -77,7 +66,6 @@
                 android:layout_weight="1"
                 android:ems="10"
                 android:inputType="number"
-                android:text="1234567890123456789011"
                 android:textAlignment="center"
                 android:textSize="20sp" />
         </TableRow>
@@ -88,34 +76,50 @@
             android:layout_weight="1">
 
             <ImageButton
-                android:id="@+id/imageButton"
+                android:id="@+id/btnAdd"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_column="0"
                 android:layout_weight=".33"
                 android:background="@android:color/transparent"
-                app:srcCompat="@drawable/ico_enabled_add" />
+                android:onClick="ticketAddManual"
+                app:srcCompat="@drawable/ico_disabled_add" />
 
             <ImageButton
-                android:id="@+id/imageButton2"
+                android:id="@+id/btnUpload"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
                 android:layout_weight=".33"
                 android:background="@android:color/transparent"
-                app:srcCompat="@drawable/ico_enabled_upload" />
+                app:srcCompat="@drawable/ico_disabled_upload" />
 
             <ImageButton
-                android:id="@+id/imageButton3"
+                android:id="@+id/btnTorch"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_column="2"
                 android:layout_weight=".33"
                 android:background="@android:color/transparent"
+                android:onClick="toggleTorch"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/ico_enabled_torch" />
+                app:srcCompat="@drawable/ico_disabled_torch" />
         </TableRow>
 
     </TableLayout>
+
+    <com.journeyapps.barcodescanner.DecoratedBarcodeView
+        android:id="@+id/tViewScanner"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/tableLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </com.journeyapps.barcodescanner.DecoratedBarcodeView>
 
 </android.support.constraint.ConstraintLayout>
