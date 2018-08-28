@@ -11,6 +11,8 @@
     <string name="settings_lbllicense">License</string>
     <string name="settings_txtlicense">Not registered</string>
     <string name="settings_btnsave">Save settings</string>
+    <string name="settings_error_invalidURL">Invalid License Server URL!</string>
+
 
     <string name="ticketlist_lblheader">Ticket</string>
     <string name="ticketlist_lblcounter">No.</string>
@@ -26,6 +28,8 @@
     <string name="menu_about">About</string>
 
     <string name="validation_btnticketcount">000</string>
-    <string name="validation_txtnooftickets">No. of Tickets:</string>
-    <string name="validation_txtticketcode">Ticket Code</string>
+    <string name="validation_txtnooftickets">Number of Tickets</string>
+    <string name="validation_txtticketcode">Barcode</string>
+
+
 </resources>

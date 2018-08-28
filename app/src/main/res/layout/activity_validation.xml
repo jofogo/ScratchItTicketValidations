@@ -6,6 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".ValidationActivity">
 
+    <com.journeyapps.barcodescanner.DecoratedBarcodeView
+        android:id="@+id/tViewScanner"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/tableLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </com.journeyapps.barcodescanner.DecoratedBarcodeView>
+
     <TableLayout
         android:id="@+id/tableLayout"
         android:layout_width="0dp"
@@ -22,32 +36,28 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:clickable="false">
 
-            <TextView
-                android:id="@+id/txtNoOfTickets"
-                android:layout_width="0dp"
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/tInpTicketCount"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_column="0"
-                android:layout_gravity="center"
-                android:layout_weight=".7"
-                android:text="@string/validation_txtnooftickets"
-                android:textAlignment="center"
-                android:textSize="20sp" />
+                android:layout_weight="1"
+                app:hintTextAppearance="@style/HintText"
+                >
 
-            <Button
-                android:id="@+id/btnTicketCount"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_column="2"
-                android:layout_gravity="center"
-                android:layout_marginRight="20dp"
-                android:layout_span="1"
-                android:layout_weight=".3"
-                android:enabled="false"
-                android:onClick="displayTicketList"
-                android:text="@string/validation_btnticketcount"
-                android:textSize="18sp" />
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/txtTicketCount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:editable="false"
+                    android:enabled="false"
+                    android:hint="@string/validation_txtnooftickets"
+                    android:onClick="displayTicketList"
+                    android:text="@string/validation_btnticketcount" />
+            </android.support.design.widget.TextInputLayout>
         </TableRow>
 
         <TableRow
@@ -55,19 +65,24 @@
             android:layout_height="match_parent"
             android:layout_weight="1">
 
-            <EditText
-                android:id="@+id/txtTicketCode"
-                android:layout_width="0dp"
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/tInpTicketCode"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_column="0"
-                android:layout_gravity="center"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
                 android:layout_weight="1"
-                android:ems="10"
-                android:inputType="number"
-                android:textAlignment="center"
-                android:textSize="20sp" />
+                app:hintTextAppearance="@style/HintText">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/txtTicketCode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:hint="@string/validation_txtticketcode"
+                    android:inputType="phone"
+                    android:maxLength="@integer/app_barcode_max" />
+            </android.support.design.widget.TextInputLayout>
         </TableRow>
 
         <TableRow
@@ -107,19 +122,5 @@
         </TableRow>
 
     </TableLayout>
-
-    <com.journeyapps.barcodescanner.DecoratedBarcodeView
-        android:id="@+id/tViewScanner"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/tableLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-    </com.journeyapps.barcodescanner.DecoratedBarcodeView>
 
 </android.support.constraint.ConstraintLayout>

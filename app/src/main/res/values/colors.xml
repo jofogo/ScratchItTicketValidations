@@ -5,4 +5,9 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="textDim">#f6f6f6</color>
+    <color name="scratchit_green">#00ac4e</color>
+
+    <color name="text_white">#ffffff</color>
+    <color name="text_gray">#5b5b5b</color>
+    <color name="button_inactive">#d6d6d6</color>
 </resources>

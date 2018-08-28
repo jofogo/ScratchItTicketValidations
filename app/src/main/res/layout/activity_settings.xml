@@ -72,7 +72,10 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
+        android:background="@color/scratchit_green"
+        android:onClick="SaveSettings"
         android:text="@string/settings_btnsave"
+        android:textColor="@color/textDim"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtLicense" />
