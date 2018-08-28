@@ -154,13 +154,13 @@ public class ValidationActivity extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
                 if (txtTicketCount.getText().toString().equals("000")) {
                     //    if (txtTicketCount.getText().toString().equals("0")) {
-                //    btnUpload.setEnabled(false);
-                //    btnUpload.setImageResource(R.drawable.ico_disabled_upload);
+                    btnUpload.setEnabled(false);
+                    btnUpload.setImageResource(R.drawable.ico_disabled_upload);
                     txtTicketCount.setEnabled(false);
 
                 } else {
-                //    btnUpload.setEnabled(true);
-                //    btnUpload.setImageResource(R.drawable.ico_enabled_upload);
+                    btnUpload.setEnabled(true);
+                    btnUpload.setImageResource(R.drawable.ico_enabled_upload);
 
                     txtTicketCount.setEnabled(true);
 
@@ -238,6 +238,15 @@ public class ValidationActivity extends AppCompatActivity {
         intent.putIntegerArrayListExtra("ticketsSelected", ticketSelected);
         startActivity(intent);
 
+    }
+
+
+    public void uploadTicketList (View view) {
+        Intent intent = new Intent (this, UploadActivity.class);
+        //intent.putExtra("ticketlist", new TicketList(ticketCodes, ticketSelected));
+
+        intent.putStringArrayListExtra("ticketCodeList" , ticketCodes);
+        startActivity(intent);
     }
 
 

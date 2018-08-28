@@ -10,7 +10,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Intent activityLogin = new Intent(this, LoginActivity.class);
+        Intent activityLogin = new Intent(this, TicketListActivity.class);
         startActivity(activityLogin);
     }
 }

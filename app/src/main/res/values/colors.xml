@@ -9,5 +9,6 @@
 
     <color name="text_white">#ffffff</color>
     <color name="text_gray">#5b5b5b</color>
+    <color name="text_red">#b70000</color>
     <color name="button_inactive">#d6d6d6</color>
 </resources>
