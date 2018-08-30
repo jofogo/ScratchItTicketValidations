@@ -1,5 +1,6 @@
 package sitv.combiz.com.scratchitticketvalidations;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,23 +13,20 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class SettingsActivity extends AppCompatActivity {
-    private String server;
-    private String license;
+
     EditText txtServer;
     EditText txtLicense;
     Button btnSave;
+    ConfigViewModel mvConfig;
 
-    private void getIntents() {
-        Intent login = getIntent();
-
-        server = login.getStringExtra("URLServer");
-        license = login.getStringExtra("LicenseKey");
-    }
+    private String un;
+    private String pw;
 
     public void SaveSettings(View view) {
         String URLServer = txtServer.getText().toString();
         try {
             URL url = new URL(URLServer);
+            Toast.makeText(this, "Settings saved!", Toast.LENGTH_SHORT).show();
             finish();
         } catch (MalformedURLException murle) {
             Toast.makeText(this, getResources().getString(R.string.settings_error_invalidURL), Toast.LENGTH_SHORT).show();
@@ -39,21 +37,26 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        mvConfig = ViewModelProviders.of(this).get(ConfigViewModel.class);
+
         txtServer = (EditText) findViewById(R.id.txtServer);
         txtLicense = (EditText) findViewById(R.id.txtLicense);
         btnSave = (Button) findViewById(R.id.btnSave);
 
-        getIntents();
+        txtServer.setText(mvConfig.getServerURL());
+        txtLicense.setText(mvConfig.getLicenseKey());
 
-        txtServer.setText(server);
-        txtLicense.setText(license);
+        Intent login = getIntent();
+        un = login.getStringExtra("username");
+        pw = login.getStringExtra("password");
     }
 
     @Override
     public void finish() {
+        mvConfig.setServerURL(txtServer.getText().toString());
         Intent data = new Intent();
-        data.putExtra("URLServer", txtServer.getText().toString());
-        data.putExtra("LicenseKey", txtLicense.getText().toString());
+        data.putExtra("username", un);
+        data.putExtra("password", pw);
         setResult(RESULT_OK, data);
         super.finish();
     }

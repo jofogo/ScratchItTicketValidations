@@ -2,10 +2,10 @@ package sitv.combiz.com.scratchitticketvalidations;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -25,74 +25,65 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.MissingResourceException;
 
 public class LoginActivity extends AppCompatActivity {
-    private URL URLServer;
-    private String server = "";
-    private String license = "";
-    private String aboutMessage = "Check permissions: Allow phone must be enabled";
-    private final int REQUEST_SETTINGS = 2;
-    private final int MY_PERMISSIONS_REQUEST_NECESSARY = 1;
-
     EditText txtUsername;
     EditText txtPassword;
     Button btnLogin;
-    Boolean userLoggedIn = false;
-
     HashMap<String, String> credentials = new HashMap<String, String>();
+    private static final int CHECK_PERMISSIONS_REQUEST = 1;
+    private static final int CHECK_SETTINGS_REQUEST = 2;
+    ConfigViewModel mvConfig;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        mvConfig = ViewModelProviders.of(this).get(ConfigViewModel.class);
+        try {
+            mvConfig.setVersion(getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+        } catch (PackageManager.NameNotFoundException nnfe) {
+            mvConfig.setVersion("Unknown");
+        }
+        mvConfig.setCompany(getResources().getString(R.string.dev_name));
 
         txtUsername = (EditText) findViewById(R.id.txtUsername);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
         btnLogin = (Button) findViewById(R.id.btnLogin);
 
         checkAndRequestPermissions();
+        setDeviceID();
         //Inititation
         setupDemo();
-        setURLServer();
+        clearForm();
 
-        txtUsername.requestFocus();
-        txtPassword.setEnabled(false);
-        btnLogin.setEnabled(false);
 
         txtUsername.addTextChangedListener(new TextWatcher() {
-                                               @Override
-                                               public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+               @Override
+               public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
 
-                                               }
+               @Override
+               public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
 
-                                               @Override
-                                               public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                                               }
-
-                                               @Override
-                                               public void afterTextChanged(Editable editable) {
-                                                   if (txtUsername.getText().toString().equals("")) {
-                                                       disableLogin();
-                                                       txtPassword.setEnabled(false);
-                                                   } else {
-                                                       if (!txtPassword.getText().toString().equals("")) {
-                                                           enableLogin();
-                                                       } else {
-                                                           disableLogin();
-                                                       }
-                                                       txtPassword.setEnabled(true);
-                                                   }
-                                               }
-                                           }
+               @Override
+               public void afterTextChanged(Editable editable) {
+                   if (txtUsername.getText().toString().equals("")) {
+                       disableLogin();
+                       txtPassword.setEnabled(false);
+                   } else {
+                       if (!txtPassword.getText().toString().equals("")) {
+                           enableLogin();
+                       } else {
+                           disableLogin();
+                       }
+                       txtPassword.setEnabled(true);
+                   }
+               }
+           }
 
         );
 
@@ -118,6 +109,27 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if (!mvConfig.getIsLoggedIn()) {
+            clearForm();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    private void clearForm() {
+        txtUsername.setText("");
+        txtPassword.setText("");
+        txtPassword.setEnabled(false);
+        disableLogin();
+        txtUsername.requestFocus();
+    }
+
     private void disableLogin() {
         btnLogin.setEnabled(false);
         btnLogin.setTextColor(getResources().getColor(R.color.text_gray));
@@ -131,8 +143,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setupDemo() {
-        server = "https://combizcorp.com/license";
-        license = "fb11b44a95a6cbce1b7d61294b827276fb1f1a70";
+        mvConfig.setServerURL("https://combizcorp.com/license");
+        mvConfig.setLicenseKey("fb11b44a95a6cbce1b7d61294b827276fb1f1a70");
         credentialsAddUser("combiz", "demo");
         credentialsAddUser("dasc", "dasc");
     }
@@ -184,13 +196,15 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             if (credentialsCheckUsername(user)) {
                 if (credentials.get(user.toLowerCase()).equals(pass)) {
-                    checkCredentials = "Logging in...";
+                    checkCredentials = "Logged in...";
                     status = true;
                 } else {
                     checkCredentials = "Incorrect password!";
+                    mvConfig.setIsLoggedIn(false);
                 }
             } else {
                 checkCredentials = "Invalid username/password";
+                mvConfig.setIsLoggedIn(false);
             }
         }
         Toast.makeText(this, checkCredentials, Toast.LENGTH_SHORT).show();
@@ -203,7 +217,7 @@ public class LoginActivity extends AppCompatActivity {
         String password = txtPassword.getText().toString();
         Log.i("credentials supplied", username + "/" + password);
         if (credentialsCheckPassword(username, password)) {
-            userLoggedIn = true;
+            mvConfig.setIsLoggedIn(true);
             Intent activityValidation = new Intent(this, ValidationActivity.class);
             startActivity(activityValidation);
         } else {
@@ -215,31 +229,6 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-
-    private String getStringLicense() {
-        return license;
-    }
-
-    private void setURLServer() {
-        try {
-            URLServer = new URL(server);
-        } catch (MalformedURLException murle) {
-            murle.printStackTrace();
-        }
-    }
-
-    private String getStringURLServer() {
-        return URLServer.toString();
-    }
-
-    private void setStringServer(String url) {
-        server = url;
-        setURLServer();
-    }
-
-    private void setStringLicense(String key) {
-        license = key;
-    }
 
     private boolean checkAndRequestPermissions() {
 
@@ -257,7 +246,7 @@ public class LoginActivity extends AppCompatActivity {
         }
         if (!listPermissionsNeeded.isEmpty()) {
             ActivityCompat.requestPermissions(this,
-                    listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), MY_PERMISSIONS_REQUEST_NECESSARY);
+                    listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), CHECK_PERMISSIONS_REQUEST);
             return false;
         }
 
@@ -267,9 +256,9 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_NECESSARY:
+            case CHECK_PERMISSIONS_REQUEST:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    setAboutDetails();
+                    mvConfig.setIsPermitted(true);
                     //Permission Granted Successfully. Write working code here.
                 } else {
                     quitApp();
@@ -292,16 +281,15 @@ public class LoginActivity extends AppCompatActivity {
         return true;
     }
 
-    @SuppressLint("MissingPermission")
-    private void setAboutDetails() {
-        try {
-            TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 
-            aboutMessage = "V " + getPackageManager().getPackageInfo(getPackageName(), 0).versionName + "\n" +
-                    "IMEI: " + telephonyManager.getDeviceId() + "\n"
-                    + getResources().getString(R.string.dev_name);
-        } catch (PackageManager.NameNotFoundException nnfe) {
-            nnfe.printStackTrace();
+    private void setDeviceID() {
+        try {
+            if (mvConfig.getIMEI().equals("")) {
+                TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                mvConfig.setIMEI(telephonyManager.getDeviceId());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
 
@@ -310,7 +298,7 @@ public class LoginActivity extends AppCompatActivity {
     private void showAboutMessage( ) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         TextView myMsg = new TextView(this);
-        myMsg.setText(aboutMessage);
+        myMsg.setText(mvConfig.getAboutMessage());
         myMsg.setGravity(Gravity.CENTER_HORIZONTAL);
         builder.setTitle(getResources().getString(R.string.app_name))
                 .setView(myMsg)
@@ -324,17 +312,15 @@ public class LoginActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.menu_about:
                 checkAndRequestPermissions();
-                setAboutDetails();
                 showAboutMessage();
                 break;
             case R.id.menu_settings:
+                mvConfig.setIsLoggedIn(true);
                 Intent intent = new Intent (this, SettingsActivity.class);
                 //intent.putExtra("ticketlist", new TicketList(ticketCodes, ticketSelected));
-                intent.putExtra("URLServer", getStringURLServer());
-                intent.putExtra("LicenseKey", getStringLicense());
-
-
-                startActivityForResult(intent, REQUEST_SETTINGS);
+                intent.putExtra("username", txtUsername.getText().toString());
+                intent.putExtra("password", txtPassword.getText().toString());
+                startActivityForResult(intent, CHECK_SETTINGS_REQUEST);
 
                 break;
             default:
@@ -347,9 +333,9 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode==REQUEST_SETTINGS && resultCode == RESULT_OK) {
-            setStringServer(data.getStringExtra("URLServer"));
-            setStringLicense(data.getStringExtra("LicenseKey"));
+        if (requestCode == CHECK_SETTINGS_REQUEST && resultCode == RESULT_OK) {
+            txtUsername.setText(data.getStringExtra("username"));
+            txtPassword.setText(data.getStringExtra("password"));
         }
     }
 }

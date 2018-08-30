@@ -6,6 +6,8 @@
     <string name="login_txtpassword">Password</string>
     <string name="login_btnlogin">Login</string>
 
+    <string name="about_error">Check phone permissions!</string>
+
     <string name="settings_lblserver">Server</string>
     <string name="settings_txtserver">Server URL (ex. https://licserv.\ncombizcorp.com/scratchit)</string>
     <string name="settings_lbllicense">License</string>

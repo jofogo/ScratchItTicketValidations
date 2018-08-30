@@ -1,8 +1,11 @@
 package sitv.combiz.com.scratchitticketvalidations;
 
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Parcelable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Layout;
@@ -24,61 +27,48 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class TicketListActivity extends AppCompatActivity{
-    ArrayList<String> ticketList = new ArrayList<String>();
-    ArrayList<Integer> ticketSelected =  new ArrayList<Integer>();
 
     TableLayout tblTickets;
-    CheckBox hcb;
+    CheckBox hCb;
 
-    private void addDemoTickets() {
-        ticketList.add("123-456789-012 345678 90-11");
-        ticketList.add("123-456789-012 345678 90-22");
-        ticketList.add("123-456789-012 345678 90-33");
-        ticketList.add("123-456789-012 345678 90-44");
-        ticketList.add("123-456789-012 345678 90-55");
-        ticketList.add("123-456789-012 345678 90-66");
-        ticketList.add("123-456789-012 345678 90-77");
-        ticketList.add("123-456789-012 345678 90-88");
-        ticketList.add("123-456789-012 345678 90-99");
-        ticketList.add("123-456789-012 345678 90-01");
-        ticketList.add("123-456789-012 345678 90-02");
-        ticketList.add("123-456789-012 345678 90-03");
-        ticketList.add("123-456789-012 345678 90-04");
-        ticketList.add("123-456789-012 345678 90-05");
-        ticketList.add("123-456789-012 345678 90-06");
-        ticketList.add("123-456789-012 345678 90-07");
-        ticketList.add("123-456789-012 345678 90-08");
-        ticketList.add("123-456789-012 345678 90-09");
-        ticketList.add("123-456789-012 345678 90-10");
+    TicketViewModel mvTicket;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_ticket_list);
+        mvTicket = ViewModelProviders.of(this).get(TicketViewModel.class);
+
+        tblTickets = (TableLayout) findViewById(R.id.tblTickets);
+        //logTickets();
+        //addDemoTickets();
+        //addTicketTicked();
+        addTableHeader();
+        populateTable();
     }
 
-    private void addTicketTicked() {
-        ticketSelected.add(0);
-        ticketSelected.add(0);
-        ticketSelected.add(0);
-        ticketSelected.add(1);
-        ticketSelected.add(0);
-        ticketSelected.add(0);
-        ticketSelected.add(1);
-        ticketSelected.add(0);
-        ticketSelected.add(1);
-        ticketSelected.add(0);
-        ticketSelected.add(0);
-        ticketSelected.add(1);
-        ticketSelected.add(0);
-        ticketSelected.add(1);
-        ticketSelected.add(0);
-        ticketSelected.add(0);
-        ticketSelected.add(1);
-        ticketSelected.add(0);
-        ticketSelected.add(1);
+    private void addDemoTickets() {
+        mvTicket.addDemoTicket("1234567890123456789011", false);
+        mvTicket.addDemoTicket("1234567890123456789022", false);
+        mvTicket.addDemoTicket("1234567890123456789033", false);
+        mvTicket.addDemoTicket("1234567890123456789044", true);
+        mvTicket.addDemoTicket("1234567890123456789055", false);
+        mvTicket.addDemoTicket("1234567890123456789066", true);
+        mvTicket.addDemoTicket("1234567890123456789077", false);
+        mvTicket.addDemoTicket("1234567890123456789088", true);
+        mvTicket.addDemoTicket("1234567890123456789099", false);
+        mvTicket.addDemoTicket("1234567890123456789000", false);
+        mvTicket.addDemoTicket("1234567890123456789111", true);
+        mvTicket.addDemoTicket("1234567890123456789122", true);
+        mvTicket.addDemoTicket("1234567890123456789133", false);
+        mvTicket.addDemoTicket("1234567890123456789144", false);
+        mvTicket.addDemoTicket("1234567890123456789155", false);
 
     }
 
 
     public void toggleAllTickets(View view) {
-        if (!hcb.isSelected()) {
+        if (!hCb.isSelected()) {
             selectAllTickets();
         } else {
             deselectAllTickets();
@@ -86,33 +76,13 @@ public class TicketListActivity extends AppCompatActivity{
         populateTable();
     }
     private void selectAllTickets() {
-        ticketSelected.clear();
-        for (int ctr=0; ctr < getTicketTotalCount(); ctr++) {
-            ticketSelected.add(1);
-
-        }
+        mvTicket.selectAllTickets();
     }
     private void deselectAllTickets() {
-        ticketSelected.clear();
-        for (int ctr=0; ctr < getTicketTotalCount(); ctr++) {
-            ticketSelected.add(0);
-        }
-    }
-
-    private int getTicketTotalCount() {
-        return ticketList.size();
+        mvTicket.deselectAllTickets();
     }
 
     private int getTableTicketRows() { return tblTickets.getChildCount() - 1;}
-
-    private void removeTicketFromList(String ticket) {
-        if (!ticket.equals("") && ticketList.contains(ticket)) {
-            int idxTicket = ticketList.indexOf(ticket);
-            ticketList.remove(idxTicket);
-            ticketSelected.remove(idxTicket);
-        }
-    }
-
 
 
 
@@ -133,7 +103,7 @@ public class TicketListActivity extends AppCompatActivity{
         h2.setTypeface(null, Typeface.BOLD);
         h2.setGravity(Gravity.CENTER);
 
-        final CheckBox hCb = new CheckBox( this);
+         hCb = new CheckBox( this);
         hCb.setGravity(Gravity.CENTER);
         hCb.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -158,17 +128,17 @@ public class TicketListActivity extends AppCompatActivity{
         tblTickets.removeViews(1, tblTickets.getChildCount()-1);
 
 
-        for (int ctr = 0; ctr < getTicketTotalCount(); ctr++) {
+        for (int ctr = 0; ctr < mvTicket.getTicketTotal(); ctr++) {
             TableRow tr = new TableRow(this);
             TextView c1 = new TextView(this);
             c1.setText(String.format(Locale.ENGLISH, "%03d", (ctr+1)));
             c1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             TextView c2 = new TextView(this);
-            c2.setText(ticketList.get(ctr));
+            c2.setText(mvTicket.getTicketCode(ctr));
             c2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             CheckBox cb = new CheckBox(this);
             cb.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            if (ticketSelected.get(ctr)==0) {
+            if (!mvTicket.getTicketSelected(ctr)) {
                 cb.setChecked(false);
             } else {
                 cb.setChecked(true);
@@ -201,8 +171,7 @@ public class TicketListActivity extends AppCompatActivity{
         btnRemove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (int ctr = 1; ctr <= getTableTicketRows(); ctr++) {
-                }
+                removeTickets();
             }
         });
         tblTickets.addView(trFooter);
@@ -211,33 +180,45 @@ public class TicketListActivity extends AppCompatActivity{
     }
 
 
+    private void removeTickets() {
+        String message = "";
+        int totalSelected = mvTicket.getSelectedTotal();
+        if (hCb.isChecked()) {
+            message = "Remove ALL tickets?";
 
-
-    private void getTicketList () {
-        Intent intent = getIntent();
-//        TicketList tl = intent.getParcelableExtra("ticketlist");
-//        ticketList = tl.getTicketCodeList();
-//        ticketSelected = tl.getListTicketsSelected();
-        ticketList = intent.getStringArrayListExtra("ticketCodeList");
-        ticketSelected = intent.getIntegerArrayListExtra("ticketsSelected");
-    }
-
-    private void logTickets() {
-        for (int ctr=0; ctr < getTicketTotalCount(); ctr++) {
-            Log.i("" + (ctr+1), ticketList.get(ctr) + " - " + ticketSelected.get(ctr));
+        } else {
+            if (totalSelected > 0) {
+                message = "Remove " + totalSelected + " tickets?";
+            }
         }
-    }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ticket_list);
-        tblTickets = (TableLayout) findViewById(R.id.tblTickets);
-        getTicketList();
-        //logTickets();
-        //addDemoTickets();
-        //addTicketTicked();
-        addTableHeader();
-        populateTable();
+        if (totalSelected > 0) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Logout")
+                    .setMessage(message)
+                    .setPositiveButton(
+                            "Yes",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    if (hCb.isChecked()) {
+                                        mvTicket.clearTickets();
+                                    }
+                                    finish();
+                                }
+                            }
+                    )
+                    .setNegativeButton(
+                            "No",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    finish();
+                                }
+                            }
+                    ).show();
+        } else {
+            finish();
+        }
     }
 }

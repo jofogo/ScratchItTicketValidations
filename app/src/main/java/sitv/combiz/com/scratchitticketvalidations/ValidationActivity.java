@@ -1,6 +1,7 @@
 package sitv.combiz.com.scratchitticketvalidations;
 
 import android.annotation.SuppressLint;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -49,23 +50,23 @@ public class ValidationActivity extends AppCompatActivity {
 
     AudioManager audioManager;
 
-
     private Boolean torchToggled=false;
     private DecoratedBarcodeView tViewScanner;
-    private String  lastTicketCode = "";
-    private int ticketCodeLength;
-    //List of ticket codes:
-    private ArrayList<String> ticketCodes = new ArrayList<String>();
-    //List of tickets selected in the TicketList activity
-    private ArrayList<Integer> ticketSelected = new ArrayList<Integer>();
+    private String lastTicketCode = "";
 
     private static Boolean isLengthReached = false;
+
+    ConfigViewModel mvConfig;
+    TicketViewModel mvTicket;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_validation);
+        mvConfig = ViewModelProviders.of(this).get(ConfigViewModel.class);
+        mvTicket = ViewModelProviders.of(this).get(TicketViewModel.class);
+
 
         //Activity elements
         txtTicketCount = (TextInputEditText) findViewById(R.id.txtTicketCount);
@@ -76,64 +77,57 @@ public class ValidationActivity extends AppCompatActivity {
 
         //Default state
         btnAdd.setEnabled(false);
-        btnUpload.setEnabled(false);
-        ticketCodeLength = getResources().getInteger(R.integer.app_barcode_length);
         txtTicketCount.requestFocus();
 
         //Barcode scanner
         tViewScanner = (DecoratedBarcodeView) findViewById(R.id.tViewScanner);
         Collection<BarcodeFormat> codeFormats = Arrays.asList(BarcodeFormat.PDF_417, BarcodeFormat.QR_CODE);
         //tViewScanner.getBarcodeView().setDecoderFactory(new DefaultDecoderFactory(codeFormats));
-
         tViewScanner.decodeContinuous(callback);
 
         //Set app volume
         setVolume();
-
         //Listen for Ticket Code field changes
+
+        if (mvTicket.getTicketTotal()>0) {
+            txtTicketCount.setText(mvTicket.getTicketCount());
+            enableUpload();
+        } else {
+            txtTicketCount.setText(mvTicket.getTicketCount());
+            disableUpload();
+        }
 
         txtTicketCode.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {  }
 
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-/*                if (i1 == getResources().getInteger(R.integer.app_barcode_max)) {
-
-                    btnAdd.setEnabled(false);
-                    btnAdd.setImageResource(R.drawable.ico_disabled_add);
-
-                } else {
-                    btnAdd.setEnabled(true);
-                    btnAdd.setImageResource(R.drawable.ico_enabled_add);
-                }*/
-            }
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {  }
 
             @Override
             public void afterTextChanged(Editable editable) {
 
-                if (editable.length() == ticketCodeLength) {
-                    editable.replace(0, editable.length(), formatTicketCode(editable.toString()));
+                if (editable.length() == mvTicket.getTicketMinLength()) {
+                    editable.replace(0, editable.length(), mvTicket.formatTicket(editable.toString()));
                     btnAdd.setEnabled(true);
                     btnAdd.setImageResource(R.drawable.ico_enabled_add);
                     isLengthReached = true;
 
                 } else {
                     if (isLengthReached) {
-                        if (formatTicketCode(editable.toString()).length() != ticketCodeLength) {
+                        if (mvTicket.formatTicket(editable.toString()).length() != mvTicket.getTicketMaxLength()) {
                             btnAdd.setEnabled(false);
                             btnAdd.setImageResource(R.drawable.ico_disabled_add);
                             isLengthReached = false;
-                            editable.replace(0, editable.length(), formatTicketCode(editable.toString()));
+                            editable.replace(0, editable.length(), mvTicket.formatTicket(editable.toString()));
                         }
                     }
                 }
 
             }
         });
+
 
         //Listen for Ticket Count field changes
         txtTicketCount.addTextChangedListener(new TextWatcher() {
@@ -154,40 +148,35 @@ public class ValidationActivity extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
                 if (txtTicketCount.getText().toString().equals("000")) {
                     //    if (txtTicketCount.getText().toString().equals("0")) {
-                    btnUpload.setEnabled(false);
-                    btnUpload.setImageResource(R.drawable.ico_disabled_upload);
-                    txtTicketCount.setEnabled(false);
-
+                    disableUpload();
                 } else {
-                    btnUpload.setEnabled(true);
-                    btnUpload.setImageResource(R.drawable.ico_enabled_upload);
-
-                    txtTicketCount.setEnabled(true);
+                    enableUpload();
 
                 }
             }
         });
     }
 
-    private String formatTicketCode (String ticketCode) {
-        if (ticketCode.length() == ticketCodeLength) {
-            return String.format("%s-%s-%s %s %s-%s",
-                    ticketCode.substring(0, 3),
-                    ticketCode.substring(3,9),
-                    ticketCode.substring(9,12),
-                    ticketCode.substring(12,18),
-                    ticketCode.substring(18,20),
-                    ticketCode.substring(20,22));
-        } else {
-            return ticketCode.replaceAll("\\D", "");
-        }
+    private void enableUpload () {
 
+        btnUpload.setEnabled(true);
+        btnUpload.setImageResource(R.drawable.ico_enabled_upload);
+
+        txtTicketCount.setEnabled(true);
     }
+
+    private void disableUpload() {
+        btnUpload.setEnabled(false);
+        btnUpload.setImageResource(R.drawable.ico_disabled_upload);
+        txtTicketCount.setEnabled(false);
+    }
+
 
     /* Start Barcode reader methods */
     @Override
     protected void onResume() {
         super.onResume();
+        txtTicketCount.setText(mvTicket.getTicketCount());
         tViewScanner.resume();
     }
 
@@ -230,12 +219,8 @@ public class ValidationActivity extends AppCompatActivity {
 
 
     public void displayTicketList(View view) {
-
         Intent intent = new Intent (this, TicketListActivity.class);
         //intent.putExtra("ticketlist", new TicketList(ticketCodes, ticketSelected));
-
-        intent.putStringArrayListExtra("ticketCodeList" , ticketCodes);
-        intent.putIntegerArrayListExtra("ticketsSelected", ticketSelected);
         startActivity(intent);
 
     }
@@ -244,22 +229,7 @@ public class ValidationActivity extends AppCompatActivity {
     public void uploadTicketList (View view) {
         Intent intent = new Intent (this, UploadActivity.class);
         //intent.putExtra("ticketlist", new TicketList(ticketCodes, ticketSelected));
-
-        intent.putStringArrayListExtra("ticketCodeList" , ticketCodes);
         startActivity(intent);
-    }
-
-
-    //Formats the text for the Ticket Count button
-    private void setBtnTicketCountText(int count) {
-        String btnText = "";
-        try {
-            btnText = String.format("%03d", count);
-        } catch (NumberFormatException nfe) {
-            nfe.printStackTrace();
-            btnText = String.format("%03d", 0);
-        }
-        txtTicketCount.setText(btnText);
     }
 
     //Add button pressed (manually add a ticketcode):
@@ -270,23 +240,23 @@ public class ValidationActivity extends AppCompatActivity {
         if (ticketCode.equals("")) {
             Toast.makeText(this, "Ticket code is empty!", Toast.LENGTH_SHORT).show();
         } else {
-            ticketAddAuto(ticketCode.replaceAll("\\D", ""));
+            ticketAddAuto(mvTicket.getTicketUnformatted(ticketCode));
         }
     }
 
     private void ticketAddAuto(String ticketCode) {
+        int ticketCodeLength = mvTicket.getTicketMinLength();
         if (ticketCode.length() != ticketCodeLength) {
             playBeep(99);
-            Toast.makeText(this, "Ticket code should be " +ticketCodeLength+ " digits!", Toast.LENGTH_SHORT).show();
-        } else if (ticketCodes.contains(formatTicketCode(ticketCode))) {
+            Toast.makeText(this, "Ticket code should be " + ticketCodeLength + " digits!", Toast.LENGTH_SHORT).show();
+        } else if (mvTicket.hasTicketCode(ticketCode)) {
             playBeep(1);
             Toast.makeText(this, "Ticket code was already used!", Toast.LENGTH_SHORT).show();
         } else {
-            ticketCodes.add(formatTicketCode(ticketCode));
-            ticketSelected.add(0);
+            mvTicket.addNewTicket(ticketCode);
             playBeep(0);
             Toast.makeText(this, "Ticket " + ticketCode + " was added.", Toast.LENGTH_SHORT).show();
-            setBtnTicketCountText(ticketCodes.size());
+            txtTicketCount.setText(mvTicket.getTicketCount());
             txtTicketCount.requestFocus();
             txtTicketCode.setText("");
         }
@@ -366,8 +336,7 @@ public class ValidationActivity extends AppCompatActivity {
     // 1. Logs out automatically if Ticket Count = 0
     // 2. Logs out after pop-up confirmation if Ticket Count > 0
     public void userLogout(View view) {
-        if (txtTicketCount.getText().toString().equals("000")) {
-            // if (txtTicketCount.getText().toString().equals("0")) {
+        if (mvTicket.getTicketTotal() == 0) {
             logout();
         } else {
             new AlertDialog.Builder(this)
@@ -397,9 +366,8 @@ public class ValidationActivity extends AppCompatActivity {
 
     //Logout sequence - Moves the Activity back to the login (MainActivity)
     private void logout() {
-        Intent intent = new Intent(ValidationActivity.super.getBaseContext(), LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
+        mvConfig.setIsLoggedIn(false);
+        super.finish();
     }
 
 
@@ -412,27 +380,17 @@ public class ValidationActivity extends AppCompatActivity {
 
     }
 
-    @SuppressLint("MissingPermission")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_about:
-                TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-
-                try {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    TextView myMsg = new TextView(this);
-                    myMsg.setText("V " + getPackageManager().getPackageInfo(getPackageName(),0).versionName  + "\n" +
-                            "IMEI: " + telephonyManager.getDeviceId() + "\n"
-                            + getResources().getString(R.string.dev_name));
-                    myMsg.setGravity(Gravity.CENTER_HORIZONTAL);
-                    builder.setTitle(getResources().getString(R.string.app_name))
-                            .setView(myMsg)
-                            .show();
-                } catch (PackageManager.NameNotFoundException e) {
-                    e.printStackTrace();
-                }
-
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                TextView myMsg = new TextView(this);
+                myMsg.setText(mvConfig.getAboutMessage());
+                myMsg.setGravity(Gravity.CENTER_HORIZONTAL);
+                builder.setTitle(getResources().getString(R.string.app_name))
+                        .setView(myMsg)
+                        .show();
                 break;
             case R.id.menu_logout:
                 userLogout(null);

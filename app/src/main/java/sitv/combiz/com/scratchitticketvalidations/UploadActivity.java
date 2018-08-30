@@ -1,5 +1,6 @@
 package sitv.combiz.com.scratchitticketvalidations;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
@@ -17,14 +18,24 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class UploadActivity extends AppCompatActivity {
-    ArrayList<String> ticketList = new ArrayList<String>();
-    ArrayList<Integer> ticketValue =  new ArrayList<Integer>();
+
     TableLayout tblTickets;
+    TicketViewModel mvTicket;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mvTicket = ViewModelProviders.of(this).get(TicketViewModel.class);
 
-    private Integer getTicketTotalCount() {
-        return ticketList.size();
+        setContentView(R.layout.activity_upload);
+        tblTickets = (TableLayout) findViewById(R.id.tblTickets);
+        //addDemoTickets();
+        addDemoTicketValues();
+        addTableHeader();
+        populateTable();
+        addTableFooter();
     }
+
 
     private void addTableHeader() {
         tblTickets.setStretchAllColumns(true);
@@ -59,33 +70,33 @@ public class UploadActivity extends AppCompatActivity {
    //     tblTickets.removeViews(1, tblTickets.getChildCount());
 
 
-        for (int ctr = 0; ctr < getTicketTotalCount(); ctr++) {
+        for (int ctr = 0; ctr < mvTicket.getTicketTotal(); ctr++) {
             TableRow tr = new TableRow(this);
             TextView c1 = new TextView(this);
             c1.setText(String.format(Locale.ENGLISH, "%03d", (ctr+1)));
             c1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             TextView c2 = new TextView(this);
-            c2.setText(ticketList.get(ctr));
+            c2.setText(mvTicket.getTicketCode(ctr));
             c2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             TextView c3 = new TextView(this);
             c3.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            double test = ticketValue.get(ctr) / 1000;
+            double test = mvTicket.getTicketValue(ctr) / 1000;
 
 
 
             if (test < 1) {
                 DecimalFormat df = new DecimalFormat("#.00");
 
-                c3.setText(df.format(ticketValue.get(ctr)));
+                c3.setText(df.format(mvTicket.getTicketValue(ctr)));
 
             } else {
                 c3.setText(String.format("%.0f K",test).toString());
             }
 
-            if (ticketValue.get(ctr) < 0) {
+            if (mvTicket.getTicketValue(ctr) < 0) {
                 c3.setText("CLAIMED");
                 c3.setTextColor(getResources().getColor(R.color.text_red));
-            } else if (ticketValue.get(ctr) == 0) {
+            } else if (mvTicket.getTicketValue(ctr) == 0) {
                 c3.setText("LOSE");
                 c3.setTextColor(getResources().getColor(R.color.text_red));
             } else {
@@ -127,61 +138,26 @@ public class UploadActivity extends AppCompatActivity {
         tblTickets.addView(trFooter);
     }
 
-    private void getTicketList () {
-        Intent intent = getIntent();
-//        TicketList tl = intent.getParcelableExtra("ticketlist");
-//        ticketList = tl.getTicketCodeList();
-//        ticketSelected = tl.getListTicketsSelected();
-        ticketList = intent.getStringArrayListExtra("ticketCodeList");
-    }
 
 
-    private void addDemoTickets() {
-        ticketList.add("123-456789-012 345678 90-11");
-        ticketList.add("123-456789-012 345678 90-22");
-        ticketList.add("123-456789-012 345678 90-33");
-        ticketList.add("123-456789-012 345678 90-44");
-        ticketList.add("123-456789-012 345678 90-55");
-        ticketList.add("123-456789-012 345678 90-66");
-        ticketList.add("123-456789-012 345678 90-77");
-        ticketList.add("123-456789-012 345678 90-88");
-        ticketList.add("123-456789-012 345678 90-99");
-        ticketList.add("123-456789-012 345678 90-01");
-        ticketList.add("123-456789-012 345678 90-02");
-        ticketList.add("123-456789-012 345678 90-03");
-        ticketList.add("123-456789-012 345678 90-04");
-        ticketList.add("123-456789-012 345678 90-05");
 
+
+    private void addDemoTicketValues() {
+        mvTicket.addTicketValue(-1);
+        mvTicket.addTicketValue(0);
+        mvTicket.addTicketValue(0);
+        mvTicket.addTicketValue(20);
+        mvTicket.addTicketValue(0);
+        mvTicket.addTicketValue(50);
+        mvTicket.addTicketValue(0);
+        mvTicket.addTicketValue(-1);
+        mvTicket.addTicketValue(200000);
+        mvTicket.addTicketValue(-1);
+        mvTicket.addTicketValue(0);
+        mvTicket.addTicketValue(200);
+        mvTicket.addTicketValue(0);
+        mvTicket.addTicketValue(10);
 
     }
 
-    private void addTicketValues() {
-        ticketValue.add(-1);
-        ticketValue.add(0);
-        ticketValue.add(0);
-        ticketValue.add(20);
-        ticketValue.add(0);
-        ticketValue.add(50);
-        ticketValue.add(0);
-        ticketValue.add(-1);
-        ticketValue.add(200000);
-        ticketValue.add(-1);
-        ticketValue.add(0);
-        ticketValue.add(200);
-        ticketValue.add(0);
-        ticketValue.add(10);
-
-    }
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_upload);
-        tblTickets = (TableLayout) findViewById(R.id.tblTickets);
-        getTicketList();
-        //addDemoTickets();
-        addTicketValues();
-        addTableHeader();
-        populateTable();
-        addTableFooter();
-    }
 }
