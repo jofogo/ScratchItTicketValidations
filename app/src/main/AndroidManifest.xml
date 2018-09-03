@@ -14,24 +14,38 @@
 
     <application
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoginActivity" android:screenOrientation="portrait">
+        <activity
+            android:name=".LoginActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!--
-        <activity android:name=".MainActivity" android:screenOrientation="portrait" android:label="@string/app_name"/>
-        -->
-        <activity android:name=".SettingsActivity" android:screenOrientation="portrait" android:label="Scratch It - Settings"/>
-        <activity android:name=".TicketListActivity" android:screenOrientation="portrait" android:label="Scratch It - Ticket Manager"/>
-        <activity android:name=".UploadActivity" android:screenOrientation="portrait" android:label="Scratch It - Ticket Results"/>
-        <activity android:name=".ValidationActivity" android:screenOrientation="portrait" android:label="@string/app_name"/>
+        <!--         <activity android:name=".MainActivity" android:screenOrientation="portrait" android:label="@string/app_name"/> -->
+        <activity
+            android:name=".SettingsActivity"
+            android:label="Scratch It - Settings"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".TicketListActivity"
+            android:label="Scratch It - Ticket Manager"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".UploadActivity"
+            android:label="Scratch It - Ticket Results"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ValidationActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" />
+        <activity android:name=".BarcodeTest"></activity>
     </application>
 
 </manifest>

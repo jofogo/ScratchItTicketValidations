@@ -19,7 +19,7 @@ public class TicketViewModel extends ViewModel {
 
     public Boolean hasTicketCode(String ticketCode) {
         try {
-            return ticketCodes.contains(ticketCode);
+            return ticketCodes.contains(getTicketFormatted(ticketCode));
         } catch (NullPointerException npe) {
             return false;
         }

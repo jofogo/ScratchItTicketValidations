@@ -30,11 +30,17 @@ import android.widget.Toast;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.ResultPoint;
+import com.google.zxing.common.StringUtils;
+import com.google.zxing.integration.android.IntentIntegrator;
 import com.journeyapps.barcodescanner.BarcodeCallback;
 import com.journeyapps.barcodescanner.BarcodeResult;
+import com.journeyapps.barcodescanner.CaptureManager;
+import com.journeyapps.barcodescanner.CompoundBarcodeView;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
+import com.journeyapps.barcodescanner.DefaultDecoderFactory;
 
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -51,7 +57,7 @@ public class ValidationActivity extends AppCompatActivity {
     AudioManager audioManager;
 
     private Boolean torchToggled=false;
-    private DecoratedBarcodeView tViewScanner;
+    private CompoundBarcodeView tViewScanner;
     private String lastTicketCode = "";
 
     private static Boolean isLengthReached = false;
@@ -80,10 +86,16 @@ public class ValidationActivity extends AppCompatActivity {
         txtTicketCount.requestFocus();
 
         //Barcode scanner
-        tViewScanner = (DecoratedBarcodeView) findViewById(R.id.tViewScanner);
-        Collection<BarcodeFormat> codeFormats = Arrays.asList(BarcodeFormat.PDF_417, BarcodeFormat.QR_CODE);
-        //tViewScanner.getBarcodeView().setDecoderFactory(new DefaultDecoderFactory(codeFormats));
+        tViewScanner = (CompoundBarcodeView) findViewById(R.id.tViewScanner);
+        tViewScanner.getViewFinder().setVisibility(View.INVISIBLE);
+
+        Collection<BarcodeFormat> codeFormats = Arrays.asList(BarcodeFormat.PDF_417, BarcodeFormat.DATA_MATRIX);
+        tViewScanner.getBarcodeView().setDecoderFactory(new DefaultDecoderFactory(codeFormats));
+
         tViewScanner.decodeContinuous(callback);
+
+
+
 
         //Set app volume
         setVolume();
@@ -246,19 +258,37 @@ public class ValidationActivity extends AppCompatActivity {
 
     private void ticketAddAuto(String ticketCode) {
         int ticketCodeLength = mvTicket.getTicketMinLength();
-        if (ticketCode.length() != ticketCodeLength) {
-            playBeep(99);
-            Toast.makeText(this, "Ticket code should be " + ticketCodeLength + " digits!", Toast.LENGTH_SHORT).show();
-        } else if (mvTicket.hasTicketCode(ticketCode)) {
-            playBeep(1);
-            Toast.makeText(this, "Ticket code was already used!", Toast.LENGTH_SHORT).show();
+
+        if (android.text.TextUtils.isDigitsOnly(ticketCode)) {
+            if (ticketCode.length() == ticketCodeLength) {
+                if (mvTicket.hasTicketCode(ticketCode)) {
+                    playBeep(1);
+                    Toast.makeText(this, "Ticket was already used!", Toast.LENGTH_SHORT).show();
+                } else {
+                    mvTicket.addNewTicket(ticketCode);
+                    playBeep(0);
+                    Toast.makeText(this, "Ticket " + ticketCode + " was added.", Toast.LENGTH_SHORT).show();
+                    txtTicketCount.setText(mvTicket.getTicketCount());
+                    txtTicketCount.requestFocus();
+                    txtTicketCode.setText("");
+                }
+            } else if (ticketCode.length() == 12) {
+                txtTicketCode.setText("");
+                txtTicketCode.setText(ticketCode);
+                txtTicketCode.setSelection(txtTicketCode.length());
+                txtTicketCode.requestFocus();
+                playBeep(0);
+
+            } else {
+                playBeep(99);
+                Toast.makeText(this, "Ticket code should be " + ticketCodeLength + " digits!", Toast.LENGTH_SHORT).show();
+
+            }
         } else {
-            mvTicket.addNewTicket(ticketCode);
-            playBeep(0);
-            Toast.makeText(this, "Ticket " + ticketCode + " was added.", Toast.LENGTH_SHORT).show();
-            txtTicketCount.setText(mvTicket.getTicketCount());
-            txtTicketCount.requestFocus();
-            txtTicketCode.setText("");
+
+            playBeep(99);
+            Toast.makeText(this, "Ticket code should contain digits only!", Toast.LENGTH_SHORT).show();
+
         }
     }
 

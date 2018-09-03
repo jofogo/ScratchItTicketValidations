@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".ValidationActivity">
 
-    <com.journeyapps.barcodescanner.DecoratedBarcodeView
+    <com.journeyapps.barcodescanner.CompoundBarcodeView
         android:id="@+id/tViewScanner"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-    </com.journeyapps.barcodescanner.DecoratedBarcodeView>
+    </com.journeyapps.barcodescanner.CompoundBarcodeView>
 
     <TableLayout
         android:id="@+id/tableLayout"
